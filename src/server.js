@@ -10,6 +10,10 @@ export const setupServer = () => {
   app.use(pino());
   app.use(express.json());
 
+  //Відступи у JSON-відповіді
+  app.set('json spaces', 2);
+
+  // GET /contacts — отримати всі контакти
   app.get('/contacts', async (req, res) => {
     try {
       const contacts = await getAllContacts();
@@ -23,6 +27,7 @@ export const setupServer = () => {
     }
   });
 
+  // GET /contacts/:contactId — отримати контакт за id
   app.get('/contacts/:contactId', async (req, res) => {
     try {
       const contact = await getContactById(req.params.contactId);
