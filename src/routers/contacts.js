@@ -9,21 +9,30 @@ import {
 } from '../controllers/contacts.js';
 // import {ctrlWraper} from '../utils/ctrlWrapper.js'
 
+import { validateBody } from '../middlewares/validateBody.js';
+
+import { isValidId } from '../middlewares/isValidId.js';
+
+import {
+  createContactSchema,
+  updateContactSchema,
+} from '../validation/contacts.js';
+
 const router = Router();
 
-// GET /contacts — отримати всі контакти
 router.get('/', getContactsController);
 
-// GET /contacts/:contactId — отримати контакт за id
-router.get('/:contactId', getContactByIdController);
+router.get('/:contactId', isValidId, getContactByIdController);
 
-//севорити новий контакт
-router.post('/', createContactController);
+router.post('/', validateBody(createContactSchema), createContactController);
 
-//оновити контакт (PATCH)
-router.patch('/:contactId', updateContactController);
+router.patch(
+  '/:contactId',
+  isValidId,
+  validateBody(updateContactSchema),
+  updateContactController,
+);
 
-//видаляє контакт
-router.delete('/:contactId', deleteContactController);
+router.delete('/:contactId', isValidId, deleteContactController);
 
 export default router;
