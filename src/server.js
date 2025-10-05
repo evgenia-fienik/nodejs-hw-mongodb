@@ -1,31 +1,29 @@
 import express from 'express';
 import cors from 'cors';
 import pino from 'pino-http';
-// import { getAllContacts, getContactById } from './services/contacts.js';
-import contactsRouter from './routers/contacts.js';
+import cookieParser from 'cookie-parser';
+
+import routes from './routers/index.js';
+
 import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 
 export const setupServer = () => {
   const app = express();
 
+  app.use(express.json());
   app.use(cors());
   app.use(pino());
-  app.use(express.json());
+  app.use(cookieParser());
 
-  //Відступи у JSON-відповіді
   app.set('json spaces', 2);
 
-  //використання роутера у contacts
-  app.use('/contacts', contactsRouter);
+  app.use(routes);
 
-  //обробка неіснуючіх роутів
   app.use(notFoundHandler);
 
-  //оброблює помилки
   app.use(errorHandler);
 
-  //
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
