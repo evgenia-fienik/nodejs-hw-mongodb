@@ -15,6 +15,8 @@ import { validateBody } from '../middlewares/validateBody.js';
 
 import { isValidId } from '../middlewares/isValidId.js';
 
+import { upload } from '../middlewares/upload.js';
+
 import {
   createContactSchema,
   updateContactSchema,
@@ -28,11 +30,17 @@ router.get('/', getContactsController);
 
 router.get('/:contactId', isValidId, getContactByIdController);
 
-router.post('/', validateBody(createContactSchema), createContactController);
+router.post(
+  '/',
+  upload.single('photo'),
+  validateBody(createContactSchema),
+  createContactController,
+);
 
 router.patch(
   '/:contactId',
   isValidId,
+  upload.single('photo'),
   validateBody(updateContactSchema),
   updateContactController,
 );

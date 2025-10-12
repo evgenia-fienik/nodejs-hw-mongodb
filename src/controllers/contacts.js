@@ -1,3 +1,6 @@
+import * as fs from 'node:fs/promises';
+import path from 'node:path';
+
 import {
   getAllContacts,
   getContactById,
@@ -9,6 +12,8 @@ import {
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
+import { getEnvVar } from '../utils/getEnvVar.js';
+import { uploadToCloudinary } from '../utils/cloudinary.js';
 
 // import { createContactSchema } from '../validation/contacts.js';
 
@@ -57,7 +62,25 @@ export const getContactByIdController = async (req, res, next) => {
 
 //POST/contacts
 export const createContactController = async (req, res) => {
-  const newContact = await createContact({ ...req.body, userId: req.user.id });
+  let photo = null;
+
+  if (getEnvVar('UPLOAD_CLOUDINARY') === 'true') {
+    const response = await uploadToCloudinary(req.file.path);
+    await fs.unlink(req.file.path);
+    photo = response.secure_url;
+  } else {
+    await fs.rename(
+      req.file.path,
+      path.resolve('src/uploads/photos', req.file.filename),
+    );
+    photo = `http://localhost:3000/photos/${req.file.filename}`;
+  }
+
+  const newContact = await createContact({
+    ...req.body,
+    photo: photo || null,
+    userId: req.user.id,
+  });
 
   res.status(201).json({
     status: 201,
@@ -71,6 +94,20 @@ export const updateContactController = async (req, res, next) => {
   const { contactId } = req.params;
   if (!mongoose.Types.ObjectId.isValid(contactId)) {
     return next(createHttpError(404, 'Contact not found'));
+  }
+
+  let updateData = { ...req.body };
+
+  if (getEnvVar('UPLOAD_CLOUDINARY') === 'true') {
+    const response = await uploadToCloudinary(req.file.path);
+    await fs.unlink(req.file.path);
+    updateData.photo = response.secure_url;
+  } else {
+    await fs.rename(
+      req.file.path,
+      path.resolve('src/uploads/photos', req.file.filename),
+    );
+    updateData.photo = `http://localhost:3000/photos/${req.file.filename}`;
   }
 
   const updatedContact = await updateContact(contactId, req.body);
