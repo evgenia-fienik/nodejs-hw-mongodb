@@ -20,6 +20,8 @@ import { uploadToCloudinary } from '../utils/cloudinary.js';
 import createHttpError from 'http-errors';
 import mongoose from 'mongoose';
 
+const APP_DOMAIN = getEnvVar('APP_DOMAIN');
+
 export const getContactsController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
   const { sortBy, sortOrder } = parseSortParams(req.query);
@@ -73,7 +75,7 @@ export const createContactController = async (req, res) => {
       req.file.path,
       path.resolve('src/uploads/photos', req.file.filename),
     );
-    photo = `http://localhost:3000/photos/${req.file.filename}`;
+    photo = `${APP_DOMAIN}/photos/${req.file.filename}`;
   }
 
   const newContact = await createContact({
@@ -107,10 +109,10 @@ export const updateContactController = async (req, res, next) => {
       req.file.path,
       path.resolve('src/uploads/photos', req.file.filename),
     );
-    updateData.photo = `http://localhost:3000/photos/${req.file.filename}`;
+    updateData.photo = `${APP_DOMAIN}/photos/${req.file.filename}`;
   }
 
-  const updatedContact = await updateContact(contactId, req.body);
+  const updatedContact = await updateContact(contactId, updateData);
 
   if (
     !updatedContact ||
