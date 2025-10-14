@@ -17,6 +17,37 @@ export async function registerUserController(req, res) {
   });
 }
 
+// export async function loginUserController(req, res, next) {
+//   try {
+//     console.log('➡️ Login request received:', req.body);
+
+//     const session = await loginUser(req.body.email, req.body.password);
+
+//     console.log('✅ Session created:', session);
+
+//     res.cookie('sessionId', session._id, {
+//       httpOnly: true,
+//       expires: session.refreshTokenValidUntil,
+//     });
+
+//     res.cookie('refreshToken', session.refreshToken, {
+//       httpOnly: true,
+//       expires: session.refreshTokenValidUntil,
+//     });
+
+//     return res.send({
+//       status: 200,
+//       message: 'Successfully logged in an user!',
+//       data: {
+//         accessToken: session.accessToken,
+//       },
+//     });
+//   } catch (error) {
+//     console.log('❌ Login error:', error);
+//     next(error); // важливо!
+//   }
+// }
+
 export async function loginUserController(req, res) {
   const session = await loginUser(req.body.email, req.body.password);
 

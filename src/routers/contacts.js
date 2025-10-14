@@ -10,11 +10,8 @@ import {
 // import {ctrlWraper} from '../utils/ctrlWrapper.js'
 
 import { authenticate } from '../middlewares/authenticate.js';
-
 import { validateBody } from '../middlewares/validateBody.js';
-
 import { isValidId } from '../middlewares/isValidId.js';
-
 import { upload } from '../middlewares/upload.js';
 
 import {
