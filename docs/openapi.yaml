@@ -11,10 +11,9 @@ tags:
     description: Operation with contacts
 servers:
   - url: http://localhost:3000
+  - url: https://nodejs-hw-mongodb-t07k.onrender.com
 
 paths:
-  # тут будуть посилання на ендпоінти
-
   /contacts:
     get:
       $ref: ../swagger/paths/contacts/get.yaml
