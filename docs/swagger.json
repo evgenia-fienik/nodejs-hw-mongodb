@@ -12,6 +12,9 @@
   "servers": [
     {
       "url": "http://localhost:3000"
+    },
+    {
+      "url": "https://nodejs-hw-mongodb-t07k.onrender.com"
     }
   ],
   "tags": [
@@ -118,9 +121,47 @@
                       "example": "Successfully found contacts!"
                     },
                     "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/contact"
+                      "type": "object",
+                      "required": [
+                        "data",
+                        "page",
+                        "perPage",
+                        "totalItems",
+                        "totalPages",
+                        "hasNextPage",
+                        "hasPreviousPage"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/contact"
+                          }
+                        },
+                        "page": {
+                          "type": "number",
+                          "example": 1
+                        },
+                        "perPage": {
+                          "type": "number",
+                          "example": 10
+                        },
+                        "totalItems": {
+                          "type": "number",
+                          "example": 45
+                        },
+                        "totalPages": {
+                          "type": "number",
+                          "example": 5
+                        },
+                        "hasNextPage": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "hasPreviousPage": {
+                          "type": "boolean",
+                          "example": false
+                        }
                       }
                     }
                   }

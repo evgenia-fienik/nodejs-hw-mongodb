@@ -1,0 +1,14 @@
+import createError from 'http-errors';
+import swaggerUI from 'swagger-ui-express';
+import fs from 'node:fs';
+import { SWAGGER_PATH } from '../constants/index.js';
+
+export const swaggerDocs = () => {
+  try {
+    const swaggerDocs = JSON.parse(fs.readFileSync(SWAGGER_PATH).toString());
+    return [...swaggerUI.serve, swaggerUI.setup(swaggerDocs)];
+  } catch (err) {
+    return (req, res, next) =>
+      next(createError(500, "Can't load swagger docs"));
+  }
+};
